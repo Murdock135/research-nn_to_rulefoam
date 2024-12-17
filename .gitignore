@@ -1,0 +1,49 @@
+# Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Data files
+*.csv
+*.json
+*.pickle
+*.npy
+*.npz
+*.h5
+*.mat
+*.dat
+*.txt
+
+# Virtual environment
+venv/
+.venv/
+env/
+*.egg-info/
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE files
+.vscode/
+pycharm/
+.idea/
+*.iml
+
+# Other
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*.old
+*.orig
+
+# Machine learning specific
+*.model
+*.weights
+*.checkpoint
+*.pth
+*.pt
+
