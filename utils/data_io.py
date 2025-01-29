@@ -168,7 +168,20 @@ class SyntheticDataset:
 #         plt.ylabel("Y")
 #         plt.show()
 
-def make_clusters(n_samples_per_cluster, n_cluster, means, covs, seed=seed):
+def make_clusters(n_samples_per_cluster=200, n_cluster=2, means=None, covs=None, seed=seed):
+    means = (np.array([
+        [0.2, 0.2],
+        [0.9, 0.9]
+    ]) if means is None else means)
+
+    covs = ([
+    [[0.1, 0],
+     [0, 0.1]],
+    
+    [[0.1, 0],
+     [0, 0.1]],
+    ] if covs is None else covs)
+
     assert len(means) == len(covs) == n_cluster, "n_cluster must equal len(means) and len(covs)"
 
     n_samples = n_samples_per_cluster * n_cluster
@@ -177,10 +190,10 @@ def make_clusters(n_samples_per_cluster, n_cluster, means, covs, seed=seed):
 
     rng = np.random.default_rng(seed)
     for mean, cov in zip(means, covs):
-        new_samples = rng.multivariate_normal(mean, cov, (n_samples_per_cluster, dim))
-        data.append(new_samples)
+        new_samples = rng.multivariate_normal(mean, cov, n_samples_per_cluster)
+        data.extend(new_samples)
     
-    return data
+    return np.array(data)
 
 
 def load_data(data_path: str, normalize=False) -> np.ndarray:
