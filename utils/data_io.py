@@ -1,17 +1,21 @@
-import pandas as pd
-from PIL import Image
-from sklearn.preprocessing import MinMaxScaler
-import matplotlib.pyplot as plt
-import numpy as np
-from datetime import datetime
-from tqdm import tqdm
+# Standard library imports
 import os
+from datetime import datetime
+
+# Third party imports
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import MinMaxScaler
+from tqdm import tqdm
+from PIL import Image
+
+# Local imports
 from utils.data_colors import COLOR_MAP
 
-
+seed = 0
 class SyntheticDataset:
     def __init__(self, image_path, color_map=COLOR_MAP, tolerance=10):
-        self.image_path = image_path
         self.color_map = color_map
         self.tolerance = tolerance
 
@@ -59,7 +63,7 @@ class SyntheticDataset:
 
     def get_coordinates_as_numpy(self, df):
         return np.vstack(df["coordinates"].values)
-
+    
     def plot_data(self, df, normalized=False):
         """Plots the data points with color coding based on class."""
         plt.figure(figsize=(8, 8))
@@ -163,6 +167,20 @@ class SyntheticDataset:
 #         plt.xlabel("X")
 #         plt.ylabel("Y")
 #         plt.show()
+
+def make_clusters(n_samples_per_cluster, n_cluster, means, covs, seed=seed):
+    assert len(means) == len(covs) == n_cluster, "n_cluster must equal len(means) and len(covs)"
+
+    n_samples = n_samples_per_cluster * n_cluster
+    dim = np.shape(means)[1]
+    data = []
+
+    rng = np.random.default_rng(seed)
+    for mean, cov in zip(means, covs):
+        new_samples = rng.multivariate_normal(mean, cov, (n_samples_per_cluster, dim))
+        data.append(new_samples)
+    
+    return data
 
 
 def load_data(data_path: str, normalize=False) -> np.ndarray:

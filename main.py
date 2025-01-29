@@ -21,4 +21,3 @@ if __name__ == "__main__":
     ax[0].scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', edgecolor='k')
 
     plt.show()
-    print(0)
