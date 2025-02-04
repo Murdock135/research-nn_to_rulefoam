@@ -183,17 +183,19 @@ def make_clusters(n_samples_per_cluster=200, n_cluster=2, means=None, covs=None,
     ] if covs is None else covs)
 
     assert len(means) == len(covs) == n_cluster, "n_cluster must equal len(means) and len(covs)"
-
-    n_samples = n_samples_per_cluster * n_cluster
-    dim = np.shape(means)[1]
-    data = []
-
+    X = []
+    y = []
     rng = np.random.default_rng(seed)
-    for mean, cov in zip(means, covs):
+
+    for i, (mean, cov) in enumerate(zip(means, covs)):
+        # Generate inputs
         new_samples = rng.multivariate_normal(mean, cov, n_samples_per_cluster)
-        data.extend(new_samples)
+        X.extend(new_samples)
+
+        # Generate labels
+        y.extend(i * np.ones(n_samples_per_cluster))
     
-    return np.array(data)
+    return np.array(X), np.array(y)
 
 
 def load_data(data_path: str, normalize=False) -> np.ndarray:

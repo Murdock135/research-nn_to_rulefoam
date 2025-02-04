@@ -13,20 +13,20 @@ class AdaptiveVectorQuantizer:
     def run(self, X, epochs=1, max_iter=1000, replace=False, plot_n=100, results_dir=None):
         # Check data sampling logic
         if replace == False:
-            assert max_iter <= X.shape[0], f"AssertionError: max_iter ({max_iter}) exceeds number of samples ({X.shape[0]})."
+            assert max_iter <= X.shape[0], f"AssertionError: max_iter ({max_iter}) exceeds number of samples ({X.shape[0]}). Cannot sample without replacement."
 
         # Create neurons
-        neurons = self.create_neurons()
+        neurons = self.create_neurons(X)
 
         # Create age matrix
         n = neurons.shape[0]
         self.age_matrix = np.zeros((n, n))
 
-        # Augment sample counts to input data
-        X = np.column_stack((X, np.zeros(X.shape[0])))
-        sample_counts = X[:, 1]
+        # Initialize sample counts
+        sample_counts = np.zeros(X.shape[0])
 
-        plot_interval = max_iter/plot_n
+        # Set plot interval
+        plot_interval = int(max_iter/plot_n)
 
         for epoch in range(epochs):
             # Shuffle data
@@ -38,24 +38,24 @@ class AdaptiveVectorQuantizer:
                 # Get sample
                 x = X_shuffled[i]
 
-                # Increase the count for x
-                X[X[:, 0] == x][1] += 1
+                # Increase the sample count for x
+                mask = np.all(X == x, axis=1)
+                sample_counts[mask] += 1
 
                 # Run update algorithm
-                self.update(x, i)
+                self.update(x, neurons, i)
 
                 if i % plot_interval == 0 | i == max_iter-1:
                     self._plot(X, neurons, x, sample_counts, epoch, i)
     
     # TODO
-    def update(x, iter):
+    def update(self, x, neurons, iter):
         pass
         
-    def create_neurons(self, n=2, dist='uniform'):
-        n = n
-        dim = self.X.shape[1]
-        min_values = np.amin(self.X, axis=0)
-        max_values = np.amax(self.X, axis=0)
+    def create_neurons(self, X, n=2, dist='uniform'):
+        dim = X.shape[1]
+        min_values = np.amin(X, axis=0)
+        max_values = np.amax(X, axis=0)
         rng = np.random.default_rng(0)
 
         if dist.lower() == "uniform":
