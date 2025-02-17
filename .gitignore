@@ -21,6 +21,7 @@ env/
 *.egg-info/
 
 # OS files
+.DS_Store
 Thumbs.db
 ehthumbs.db
 Desktop.ini

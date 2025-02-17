@@ -53,6 +53,26 @@ class AdaptiveVectorQuantizer:
         pass
         
     def create_neurons(self, X, n=2, dist='uniform'):
+        """Create initial neurons for the network.
+
+        Parameters
+        ----------
+        X : ndarray of shape (n_samples, n_features)
+            Training data.
+        n : int, default=2
+            Number of initial neurons to create.
+        dist : {'uniform', 'normal'}, default='uniform'
+            Distribution to sample initial neuron positions from:
+            - 'uniform': Sample uniformly between min and max values of X
+            - 'normal': Sample from normal distribution with mean and std of X
+
+        Returns
+        -------
+        ndarray of shape (n, n_features)
+            Initial neuron positions.
+
+        
+        """
         dim = X.shape[1]
         min_values = np.amin(X, axis=0)
         max_values = np.amax(X, axis=0)
